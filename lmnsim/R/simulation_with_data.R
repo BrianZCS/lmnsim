@@ -9,7 +9,6 @@ library(tidybayes)
 ##fitting method for cluster
 #' @export
 cal_fit <- function(data_list) {
-  ##npp_model <- cmdstan_model("./lmnsim/R/lmn_state_fitting.stan")
   npp_model <- cmdstan_model(system.file("lmn_state_fitting.stan", package = "lmnsim"))
   fit <-  npp_model$variational(data_list, iter = 2e4)
   a = fit$summary(variables = c("theta"), "mean")
@@ -88,7 +87,7 @@ sim_clust_obs<-function(prob_matrix, initial_state, n_clust,n_person, sigma1, n_
 
 ##fitting method for perturbation
 model_fit<-function(data_list){
-  model<-cmdstan_model("./lmnsim/R/lmn_perturbation_fitting.stan")
+  model<-cmdstan_model(system.file("lmn_perturbation_fitting.stan", package = "lmnsim"))
   fit <- model$variational(data_list, iter = 2e4)
   sigma = fit$summary(variables = c("sigma"), "mean")
   a = fit$summary(variables = c("beta"), "mean")
