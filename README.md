@@ -1,4 +1,5 @@
 # lmnsim
 
-# install.packages("devtools")
+
+#install.packages("devtools")
 devtools::install_github("BrianZCS/lmnsim/lmnsim")
