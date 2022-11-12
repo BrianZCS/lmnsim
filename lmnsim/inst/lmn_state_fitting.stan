@@ -21,7 +21,7 @@ parameters {
  //vector[n_species] mu;
  vector<lower=0>[n_species]sigma;
  //vector[n_species]mu;//May give too much variant for the spiecies
- real<lower = 0> dirich;
+ real<lower=0.1,upper=10> dirich;
  real<lower = 0, upper = 1> scale;
   //real<lower=0> sigma;
   matrix[n_clust, n_species] beta; //coefficient for in/out clusters
@@ -47,7 +47,7 @@ model {
   for (i in 1:(n_steps*n_person)) {
     theta[i] ~ dirichlet(rep_vector(dirich, n_clust));//set to 0.1 will be easier to threshould
   }
-  
+
   vector[n_species] mu_;
   // Can add person's effect
   // for(j in 1:n_person){
@@ -65,20 +65,20 @@ model {
 
 
 
-//can be used to evaluate the model. 
+//can be used to evaluate the model.
 // generated quantities {
-//   // simulate samples based on current treatment 
+//   // simulate samples based on current treatment
 //   vector[n_species + 1] p_sim;
 //   matrix[n_clust, n_species] mu_;
 //   array[n_clust, n_species + 1] int<lower=0> y_sim;
-//  
+//
 //   for (j in 1:n) {
 //     mu_[j] =  (beta' * to_vector(theta[j]))';
 //   }
-  // 
+  //
   // for (i in 1:n) {
   //   p_sim = phi_inv(mu_[j], n_species);
   //   y_sim[i] = multinomial_rng(to_vector(p_sim), depth);
   // }
-  
+
 //}

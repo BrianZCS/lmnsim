@@ -8,7 +8,7 @@ library(tidybayes)
 
 cal_fit_clust <- function(data_list) {
   npp_model <- cmdstan_model(system.file("lmn_state_fitting.stan", package = "lmnsim"))
-  fit <-  npp_model$variational(data_list, iter = 2e4)
+  fit <-  npp_model$variational(data_list, iter = 10000, adapt_engaged = FALSE, eta = 0.1)
   a = fit$summary(variables = c("theta"), "mean")
   b = fit$summary(variables = c("sigma"), "mean")
   beta = fit$summary(variables = c("beta"),"mean")
