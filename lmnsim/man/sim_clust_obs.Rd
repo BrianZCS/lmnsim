@@ -6,7 +6,7 @@
 \usage{
 sim_clust_obs(
   prob_matrix = NULL,
-  initial_state,
+  initial_state = 1,
   n_clust,
   n_steps = NULL,
   n_depth = NULL,

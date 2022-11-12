@@ -98,7 +98,7 @@ cal_fit <- function(data_list, fit_type){
 #' @examples
 #' sim_clust_obs(initial_state = 1, n_clust =4, n_person = 1, obs=preg_data)
 #' @export
-sim_clust_obs<-function(prob_matrix = NULL, initial_state, n_clust,n_steps = NULL, n_depth = NULL, n_person, obs){
+sim_clust_obs<-function(prob_matrix = NULL, initial_state = 1, n_clust,n_steps = NULL, n_depth = NULL, n_person, obs){
   n_species = ncol(obs)-1
   if(is.null(n_steps)){
     n_steps = nrow(obs)/n_person
@@ -107,7 +107,7 @@ sim_clust_obs<-function(prob_matrix = NULL, initial_state, n_clust,n_steps = NUL
     n_depth = round(mean(rowSums(obs)),0)
   }
   data_list <- list(n_species = n_species, n_steps = nrow(obs)/n_person, n_clust = n_clust, y = obs, n_person = n_person)
-  result = cal_fit(data_list)
+  result = cal_fit_clust(data_list)
   # sigma1 = result$sigma
   # sigma1 = sigma1$mean
   if(is.null(prob_matrix)){
@@ -140,7 +140,7 @@ sim_perturb_obs<-function(alpha, obs, n_depth = NULL){
     n_depth = round(mean(rowSums(obs)),0)
   }
   data_list<-list(alpha=alpha, n_species=ncol(obs)-1, n_timepoints = length(alpha), y = obs)
-  result = model_fit(data_list)
+  result = cal_fit_perturbation(data_list)
   beta = result$beta
 
   data = sim_ts_perturb_2(alpha = alpha, n_species = n_species, n_depth = n_depth, beta = beta)
