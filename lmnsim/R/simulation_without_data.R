@@ -3,6 +3,7 @@ library(tidyverse)
 library(markovchain)
 library(MCMCpack)
 library(dplyr)
+library(MASS)
 
 phi_inverse <- function(mu) {
   sum_exp <- sum(exp(mu))
@@ -10,7 +11,7 @@ phi_inverse <- function(mu) {
 }
 
 #' Simulate microbiome sample data
-#' 
+#'
 #' Simulate microbiome abundance count data with user-specified number of samples, species and sequencing depth
 #' @param n_samples number of samples
 #' @param n_species number of species
@@ -25,22 +26,22 @@ sim_samples <- function(n_samples, n_species, n_depth, Sigma = NULL) {
     Sigma <- matrix(0.1, n_species - 1, n_species - 1)
     diag(Sigma) <- 1
   }
-  
+
   result <- list()
   x <- MASS::mvrnorm(1, rep(0, n_species - 1), Sigma)
   p <- phi_inverse(x)
-  
+
   for (i in seq_len(n_samples)) {
     result[[i]] <- rmultinom(1, n_depth, p) %>%
       t() %>%
       as.data.frame()
   }
-  
+
   bind_rows(result)
 }
 
 #' Simulate microbiome time series data
-#' 
+#'
 #' simulate microbiome longitudinal count data for one sample
 #' @param endtime the number of time points of the sample
 #' @param n_species number of species
@@ -55,23 +56,23 @@ sim_ts <- function(endtime, n_species, n_depth, Sigma = NULL) {
     Sigma <- matrix(0.1, n_species - 1, n_species - 1)
     diag(Sigma) <- 1
   }
-  
+
   result <- list()
   x <- MASS::mvrnorm(1, rep(0, n_species - 1), Sigma)
   for (i in seq_len(endtime)) {
     e <- MASS::mvrnorm(1, rep(0, n_species - 1), 0.001 * Sigma)
     x <- 0.999*x + e
-    
+
     result[[i]] <- rmultinom(1, n_depth, phi_inverse(x)) %>%
       t() %>%
       as.data.frame()
   }
-  
+
   bind_rows(result)
 }
 
 #' Simulate microbiome perturbation data
-#' 
+#'
 #' To simulate microbiome longitudinal count data for perturbation experiments with user defined starting and ending time point, effect size and duration of perturbation
 #' @param endtime the number of time points of the sample
 #' @param n_species number of species
@@ -92,7 +93,7 @@ sim_ts_perturb <- function(endtime, n_species, n_depth, Sigma = NULL, beta, t1,t
     Sigma <- matrix(0, n_species - 1, n_species - 1)
     diag(Sigma) <- 1
   }
-  
+
   result <- list()
   x <- MASS::mvrnorm(1, rep(0, n_species - 1), Sigma)
   for (i in seq_len(endtime)) {
@@ -123,12 +124,12 @@ sim_ts_perturb <- function(endtime, n_species, n_depth, Sigma = NULL, beta, t1,t
       t() %>%
       as.data.frame()
   }
-  
+
   bind_rows(result)
 }
 
 #' Simulate microbiome perturbation data using clusted model
-#' 
+#'
 #' To simulate microbiome longitudinal count data for perturbation experiments with user defined alpha, effect, and centroids of perturbed/unperturbed data
 #' @param alpha the perturbation intensity, 0 means no perturbed, 1 means fully perturbed
 #' @param n_species number of species
@@ -146,42 +147,42 @@ sim_ts_perturb_2<-function(alpha, n_species = 30, Sigma=NULL, n_depth, effect, b
     Sigma <- matrix(0.1, n_species - 1, n_species - 1)
     diag(Sigma) <- 1
   }
-  
+
   if(is.null(beta)){
     beta = matrix(nrow = 2, ncol = n_species-1)
     beta[1, ] = mvrnorm(n=1,rep(0, n_species - 1), Sigma)
-    beta[2, ] = mvrnorm(n=1,c(rep(effect,3),rep(0, n_species - 4)), Sigma) 
+    beta[2, ] = mvrnorm(n=1,c(rep(effect,3),rep(0, n_species - 4)), Sigma)
   }
-  
+
   result <- list()
   for (i in 1:length(alpha)){
-    
+
     x = c(t(beta) %*%  as.matrix(c(alpha[i], 1-alpha[i])))
     result[[i]] = rmultinom(1, n_depth, phi_inverse(x))%>%
       t() %>%
       as.data.frame()
   }
-  
+
   as.matrix(bind_rows(result))
 }
 
 #' simulate the markov chain from transition matrix
 markov_sample<-function(prob_matrix, n_steps, initial_state){
   result<-vector(length=n_steps)
-  
+
   result[1]=initial_state
   for (i in 1:n_steps){
-    
+
     result[i+1]=sample(x=1:nrow(prob_matrix),size=1, prob=prob_matrix[result[i],])
   }
-  
+
   return(result)
 }
 
 
 #' Simulate microbiome clustered data
-#' 
-#' To simulate microbiome longitudinal count data with clustering and markov chain based on user input transition matrix 
+#'
+#' To simulate microbiome longitudinal count data with clustering and markov chain based on user input transition matrix
 #' @param prob_matrix transition matrix of markov chain
 #' @param initial_state the initial state of the markov chain
 #' @param n_steps number of time points

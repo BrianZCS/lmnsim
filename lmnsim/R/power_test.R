@@ -1,7 +1,7 @@
 library(rlist)
 #' Alpha sequence generator
-#' 
-#' The function generate alpha (perturbation intensity sequence) which can be used in the simulator 
+#'
+#' The function generate alpha (perturbation intensity sequence) which can be used in the simulator
 #' @param n_timepoints number of time points
 #' @param interval the interval of perturbation (interval[1]-interval[2]): increase the permutation intensity.(interval[2]-interval[3]): achieve maximized perturbation intensity. (interval[3]-interval[4]): decrease the permutation intensity.
 #' @param signal_size the maximum perturbation intensity (between 0 and 1)
@@ -15,16 +15,16 @@ make_alphas <- function(n_timepoints, intervals, signal_size) {
   alpha
 }
 
-#' configurations generator 
-#' 
-#' The function generate all configurations used in the power test 
+#' configurations generator
+#'
+#' The function generate all configurations used in the power test
 #' @param ns the number of samples
 #' @param n_depth sequence depth
 #' @param alpha the maximum perturbation intensity (between 0 and 1)
 #' @param interval the interval of perturbation (interval[1]-interval[2]): increase the permutation intensity.(interval[2]-interval[3]): achieve maximized perturbation intensity. (interval[3]-interval[4]): decrease the permutation intensity.
 #' @param n_timepoints number of time points
 #' @return configurations the configurations used in the power test
-#' @export 
+#' @export
 make_configurations <- function(ns, n_depth, alpha, intervals = NULL, n_timepoints = NULL) {
   if (is.null(intervals)) {
     intervals <- c(5, 8, 14, 18)
@@ -32,8 +32,6 @@ make_configurations <- function(ns, n_depth, alpha, intervals = NULL, n_timepoin
   if (is.null(n_timepoints)) {
     n_timepoints <- 20
   }
-  
-  
   configurations <- cross(list(n = ns, n_depth = n_depth, alpha = alpha))
   for (i in seq_along(configurations)) {
     configurations[[i]][["alpha"]] <- make_alphas(n_timepoints, intervals, configurations[[i]][["alpha"]]) %>%
@@ -42,13 +40,22 @@ make_configurations <- function(ns, n_depth, alpha, intervals = NULL, n_timepoin
   configurations
 }
 
+#' Get the centroids of the fitted model
+#'
+#' The function get the centroids of the fitted model
+#' @param data_list list used in the fitting list(alpha=alpha, n_species=ncol(obs)-1, n_timepoints = length(alpha), y = obs))
+#' @return  fitted centroids (beta)
 #' @export
 get_centroids <- function(data_list){
   result = model_fit(data_list)
   result$beta
 }
 
-
+#' Modify centroids
+#'
+#' The function modifies the centroids to perturbed/unperturbed
+#' @param centroids the centorids of the cluster
+#' @return  modified centroids
 #' @export
 modify_centroids_fraction <- function(centroids, fraction_perturbed = NULL) {
   # estimated centroids from pilot # get_centroids(...)
@@ -58,16 +65,21 @@ modify_centroids_fraction <- function(centroids, fraction_perturbed = NULL) {
   if(is.null(fraction_perturbed)){
     fraction_perturbed = 0.5
   }
-  
+
   difference = sort(rank(abs(centroids[2,] - centroids[1,])))
   for(i in 1:(ncol(centroids)*(1-fraction_perturbed))){
     column = as.integer(substring(names(difference[i]),2))
     centroids[1,column] = (centroids[1,column] + centroids[2,column])/2
-    centroids[2,column] = centroids[1,column] 
+    centroids[2,column] = centroids[1,column]
   }
   centroids
 }
 
+#' transform the matrix to the dataframe
+#'
+#' The function transform the power statistics to the dataframe
+#' @param matrix matrix of the power statistics
+#' @return transformed dataframe
 #' @export
 power_matrix_transform = function(matrix){
   stat = as.data.frame(matrix)
@@ -82,6 +94,16 @@ power_matrix_transform = function(matrix){
   pivot_longer(stat, cols = starts_with("rep"),names_to = "rep",values_to = "power")
 }
 
+#' calculate the powers
+#'
+#' The function calculates the statistics of power test
+#' @param config configurations
+#' @param centroids centroids of the cluster
+#' @param n_reps number of repetitions
+#' @param simulator simulator we use
+#' @param sig_level significance level
+#' @param sim_opts true perturbed species
+#' @return  power statistics
 #' @export
 estimate_stat <-
   function(config,

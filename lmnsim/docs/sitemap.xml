@@ -13,6 +13,12 @@
     <loc>/reference/cal_fit.html</loc>
   </url>
   <url>
+    <loc>/reference/estimate_stat.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_centroids.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
@@ -23,6 +29,12 @@
   </url>
   <url>
     <loc>/reference/markov_sample.html</loc>
+  </url>
+  <url>
+    <loc>/reference/modify_centroids_fraction.html</loc>
+  </url>
+  <url>
+    <loc>/reference/power_matrix_transform.html</loc>
   </url>
   <url>
     <loc>/reference/sim_clust_obs.html</loc>

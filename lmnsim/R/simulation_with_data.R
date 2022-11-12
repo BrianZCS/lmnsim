@@ -48,9 +48,9 @@ cal_fit_clust <- function(data_list) {
         updated_matrix[as.numeric(j), as.numeric(k)] = fit_matrix[j, k]
       }
     }
-    return(list(sigma = b, matrix = updated_matrix, centers = beta_matrix))
+    return(list(sigma = b, matrix = as.matrix(updated_matrix), centers = beta_matrix))
   }
-  return(list(sigma = b, matrix = fit_matrix, centers = beta_matrix))
+  return(list(sigma = b, matrix = as.matrix(fit_matrix), centers = beta_matrix))
 }
 
 ##fitting method for perturbation
@@ -65,7 +65,7 @@ cal_fit_perturbation<-function(data_list){
       beta[i,j] = a$mean[a$variable==paste("beta[",i,",", j, "]", sep = "")]
     }
   }
-  list(sigma = sigma$mean, beta = beta)
+  list(sigma = sigma$mean, beta = as.matrix(beta))
 }
 
 #' fitting cluster/perturbation model
