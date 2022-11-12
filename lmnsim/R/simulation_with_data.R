@@ -98,7 +98,7 @@ cal_fit <- function(data_list, fit_type){
 #' @examples
 #' sim_clust_obs(initial_state = 1, n_clust =4, n_person = 1, obs=preg_data)
 #' @export
-sim_clust_obs<-function(prob_matrix, initial_state, n_clust,n_steps = NULL, n_depth = NULL, n_person, obs){
+sim_clust_obs<-function(prob_matrix = NULL, initial_state, n_clust,n_steps = NULL, n_depth = NULL, n_person, obs){
   n_species = ncol(obs)-1
   if(is.null(n_steps)){
     n_steps = nrow(obs)/n_person
@@ -110,7 +110,9 @@ sim_clust_obs<-function(prob_matrix, initial_state, n_clust,n_steps = NULL, n_de
   result = cal_fit(data_list)
   # sigma1 = result$sigma
   # sigma1 = sigma1$mean
-  prob_matrix = result$matrix
+  if(is.null(prob_matrix)){
+    prob_matrix = result$matrix
+  }
   centers = result$centers
   states=markov_sample(prob_matrix, (n_steps*n_person), initial_state)
   data=matrix(nrow=(n_steps*n_person), ncol=n_species+1)
