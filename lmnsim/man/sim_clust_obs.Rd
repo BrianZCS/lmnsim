@@ -5,7 +5,7 @@
 \title{Simulate microbiome sample data through cluster model}
 \usage{
 sim_clust_obs(
-  prob_matrix,
+  prob_matrix = NULL,
   initial_state,
   n_clust,
   n_steps = NULL,
