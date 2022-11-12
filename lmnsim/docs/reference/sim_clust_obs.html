@@ -48,30 +48,41 @@
 <span>  <span class="va">prob_matrix</span>,</span>
 <span>  <span class="va">initial_state</span>,</span>
 <span>  <span class="va">n_clust</span>,</span>
+<span>  n_steps <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  n_depth <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">n_person</span>,</span>
-<span>  <span class="va">sigma1</span>,</span>
-<span>  <span class="va">n_species</span>,</span>
-<span>  <span class="va">n_depth</span>,</span>
 <span>  <span class="va">obs</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>n_species</dt>
-<dd><p>number of species</p></dd>
+    <dl><dt>prob_matrix</dt>
+<dd><p>transition matrix of the markov-chain</p></dd>
+
+
+<dt>initial_state</dt>
+<dd><p>initial state of the markov-chain</p></dd>
+
+
+<dt>n_clust</dt>
+<dd><p>number of clusters</p></dd>
+
+
+<dt>n_steps</dt>
+<dd><p>number of timepoints</p></dd>
 
 
 <dt>n_depth</dt>
 <dd><p>sequence depth</p></dd>
 
 
-<dt>n_samples</dt>
-<dd><p>number of samples</p></dd>
+<dt>n_person</dt>
+<dd><p>number of persons in the pilot data</p></dd>
 
 
-<dt>Sigma</dt>
-<dd><p>correlation matrix for muti-nomal distribution</p></dd>
+<dt>obs</dt>
+<dd><p>pilot data</p></dd>
 
 </dl></div>
     <div id="value">

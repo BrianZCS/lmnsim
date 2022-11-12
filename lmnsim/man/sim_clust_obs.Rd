@@ -8,21 +8,26 @@ sim_clust_obs(
   prob_matrix,
   initial_state,
   n_clust,
+  n_steps = NULL,
+  n_depth = NULL,
   n_person,
-  sigma1,
-  n_species,
-  n_depth,
   obs
 )
 }
 \arguments{
-\item{n_species}{number of species}
+\item{prob_matrix}{transition matrix of the markov-chain}
+
+\item{initial_state}{initial state of the markov-chain}
+
+\item{n_clust}{number of clusters}
+
+\item{n_steps}{number of timepoints}
 
 \item{n_depth}{sequence depth}
 
-\item{n_samples}{number of samples}
+\item{n_person}{number of persons in the pilot data}
 
-\item{Sigma}{correlation matrix for muti-nomal distribution}
+\item{obs}{pilot data}
 }
 \value{
 the simulated data
