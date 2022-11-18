@@ -1,0 +1,42 @@
+---
+title: "tmp"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+```{r}
+library(markovchain)
+library(tidyverse)
+```
+
+```{r}
+temp_data <- tibble(
+  subject = rep(1:2, each = 40),
+  time = rep(1:40, 2),
+  cluster = sample(1:4, 80, replace = TRUE)
+) %>%
+  mutate(subject = as.factor(subject))
+```
+
+```{r}
+markovchainFit(temp_data$cluster[1:10])
+```
+```{r}
+estimate_transitions <- function(clusters) {
+  z <- clusters$cluster
+  K <- n_distinct(z)
+  P <- matrix(0, K, K)
+  
+  for (i in seq_len(nrow(clusters))) {
+    if (i == nrow(clusters) || clusters$subject[i] != clusters$subject[i + 1]) next
+    P[z[i], z[i + 1]] <- P[z[i], z[i + 1]] + 1
+  }
+  
+  P / rowSums(P) 
+}
+
+estimate_transitions(clusters)
+markovchainFit(clusters$cluster)
+
+```
+
